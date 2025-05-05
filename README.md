@@ -56,14 +56,14 @@ if (!isset($_GET['code'])) {
     
     // We have an access token, which we may use in authenticated
     // requests against the Business Central API.
-    echo 'Access Token: ' . $tokens->getToken() . "<br>";
-    echo 'Refresh Token: ' . $tokens->getRefreshToken() . "<br>";
-    echo 'Expired in: ' . $tokens->getExpires() . "<br>";
-    echo 'Already expired? ' . ($tokens->hasExpired() ? 'expired' : 'not expired') . "<br>";
+    echo 'Access Token: ' . $token->getToken() . "<br>";
+    echo 'Refresh Token: ' . $token->getRefreshToken() . "<br>";
+    echo 'Expired in: ' . $token->getExpires() . "<br>";
+    echo 'Already expired? ' . ($token->hasExpired() ? 'expired' : 'not expired') . "<br>";
     
     // We might save the token somewhere safe for later use
-    $serialized = json_encode($tokens->jsonSerialize(), JSON_PRETTY_PRINT);
-    file_put_contents('./tokens.json', $serialized);
+    $filename = __DIR__ . '/tokens.json';
+    file_put_contents($filename, json_encode($token->jsonSerialize(), JSON_PRETTY_PRINT));
 }
 ```
 
@@ -74,20 +74,19 @@ $provider = new Rebel\OAuth2\Client\Provider\BusinessCentral([
     'tenantId'                  => 'mydomain.com',
     'clientId'                  => 'xxxxx-yyyy-zzzz-xxxx-yyyyyyyyyyyy',
     'clientSecret'              => '*************************',
-    'redirectUri'               => 'https://example.com/callback-url',
 ]);
 
 // load existing tokens from storage
-$tokens = new League\OAuth2\Client\Token(json_decode(file_get_contents('./tokens.json'), true));
+$filename = __DIR__ . '/tokens.json';
+$token = new League\OAuth2\Client\Token(json_decode(file_get_contents($filename), true));
 
-if ($tokens->hasExpired()) {
-    $tokens = $provider->getAccessToken('refresh_token', [
-        'refresh_token' => $tokens->getRefreshToken()
+if ($token->hasExpired()) {
+    $token = $provider->getAccessToken('refresh_token', [
+        'refresh_token' => $token->getRefreshToken()
     ]);
 
     // Purge old tokens and store new ones to your data store.
-    $serialized = json_encode($tokens->jsonSerialize(), JSON_PRETTY_PRINT);
-    file_put_contents('./tokens.json', $serialized);
+    file_put_contents($filename, json_encode($token->jsonSerialize(), JSON_PRETTY_PRINT));
 }
 ```
 
@@ -103,7 +102,7 @@ $apiUrl = "https://api.businesscentral.dynamics.com/v2.0/$tenantId/$environment/
 $client = new GuzzleHttp\Client();
 $response = $client->get($apiUrl . '/companies', [
     'headers' => [
-        'Authorization' => 'Bearer ' . $tokens->getToken(),
+        'Authorization' => 'Bearer ' . $token->getToken(),
         'Accept' => 'application/json'
     ]
 ]);
@@ -132,7 +131,7 @@ $oDataUrl = "https://api.businesscentral.dynamics.com/v2.0/$tenantId/$environmen
 $client = new GuzzleHttp\Client();
 $response = $client->get($oDataUrl . '/Company', [
     'headers' => [
-        'Authorization' => 'Bearer ' . $tokens->getToken(),
+        'Authorization' => 'Bearer ' . $token->getToken(),
         'Accept' => 'application/json'
     ]
 ]);
