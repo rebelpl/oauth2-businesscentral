@@ -19,16 +19,23 @@ class BusinessCentral extends AbstractProvider
         return $this->tenantId;
     }
 
+    public function getAdminConsentUrl(): string
+    {
+        return "https://login.microsoftonline.com/{$this->tenantId}/adminconsent?"
+            . http_build_query([
+                'client_id' => $this->clientId,
+                'redirect_uri' => $this->redirectUri,
+            ]);
+    }
+
     public function getBaseAuthorizationUrl(): string
     {
-        $tenantId = $this->getTenantId();
-        return "https://login.microsoftonline.com/$tenantId/oauth2/v2.0/authorize";
+        return "https://login.microsoftonline.com/{$this->tenantId}/oauth2/v2.0/authorize";
     }
 
     public function getBaseAccessTokenUrl(array $params): string
     {
-        $tenantId = $this->getTenantId();
-        return "https://login.microsoftonline.com/$tenantId/oauth2/v2.0/token";
+        return "https://login.microsoftonline.com/{$this->tenantId}/oauth2/v2.0/token";
     }
 
     protected function getDefaultScopes(): array
