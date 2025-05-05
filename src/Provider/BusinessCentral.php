@@ -64,4 +64,18 @@ class BusinessCentral extends AbstractProvider
     {
         return new GenericResourceOwner($response, self::ACCESS_TOKEN_RESOURCE_OWNER_ID);
     }
+
+    protected function getDefaultHeaders(): array
+    {
+        return [
+            'Accept' => 'application/json'
+        ];
+    }
+
+    protected function getAuthorizationHeaders(?AccessToken $token = null): array
+    {
+        return [
+            'Authorization' => 'Bearer ' . $token,
+        ];
+    }
 }
