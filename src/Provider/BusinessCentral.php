@@ -72,7 +72,7 @@ class BusinessCentral extends AbstractProvider
         ];
     }
 
-    protected function getAuthorizationHeaders(?AccessToken $token = null): array
+    protected function getAuthorizationHeaders($token = null): array
     {
         return [
             'Authorization' => 'Bearer ' . $token,
