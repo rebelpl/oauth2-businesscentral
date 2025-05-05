@@ -1,0 +1,38 @@
+{
+  "name": "rebelpl/oauth2-businesscentral",
+  "description": "Business Central OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Artur Jedliński",
+      "email": "artur@jedlinski.pl",
+      "homepage": "https://github.com/nataniel"
+    }
+  ],
+  "keywords": [
+    "oauth",
+    "oauth2",
+    "client",
+    "authorization",
+    "authorisation",
+    "business central"
+  ],
+  "require": {
+    "league/oauth2-client": "^2.0"
+  },
+  "require-dev": {
+    "mockery/mockery": "~0.9",
+    "squizlabs/php_codesniffer": "~2.0",
+    "phpunit/phpunit": "^11"
+  },
+  "autoload": {
+    "psr-4": {
+      "Rebel\\OAuth2\\Client\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Rebel\\OAuth2\\Client\\Test\\": "tests/src/"
+    }
+  }
+}
