@@ -30,6 +30,16 @@ $provider = new Rebel\OAuth2\Client\Provider\BusinessCentral([
     'redirectUri'               => 'https://example.com/callback-url',
 ]);
 
+// For CSRF protection
+session_start();
+
+// Handle OAuth error message
+if (isset($_GET['error'])) {
+    echo "Error: " . $_GET['error'] . "<br />";
+    echo "Description: " . $_GET['error_description'] . "<br />";
+    exit();
+}
+
 // If we don't have an authorization code then get one
 if (!isset($_GET['code'])) {
 
