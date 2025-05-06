@@ -1,10 +1,8 @@
 <?php
 namespace Rebel\OAuth2\Client\Provider;
 
-use GuzzleHttp\Psr7\Uri;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
-use League\OAuth2\Client\Provider\GenericResourceOwner;
 use League\OAuth2\Client\Token\AccessToken;
 use Psr\Http\Message\ResponseInterface;
 
@@ -13,6 +11,12 @@ class BusinessCentral extends AbstractProvider
     const ACCESS_TOKEN_RESOURCE_OWNER_ID = 'id';
 
     protected string $tenantId;
+
+    public function __construct(array $options = [], array $collaborators = [])
+    {
+        $this->tenantId = $options['tenantId'] ?? 'common';
+        parent::__construct($options, $collaborators);
+    }
 
     public function getTenantId(): string
     {
@@ -40,7 +44,9 @@ class BusinessCentral extends AbstractProvider
 
     protected function getDefaultScopes(): array
     {
-        return [ 'https://api.businesscentral.dynamics.com/user_impersonation offline_access' ];
+        return [
+            'https://api.businesscentral.dynamics.com/user_impersonation offline_access',
+        ];
     }
 
     protected function checkResponse(ResponseInterface $response, $data): void
@@ -56,13 +62,13 @@ class BusinessCentral extends AbstractProvider
 
     public function getResourceOwnerDetailsUrl(AccessToken $token): string
     {
-        $uri = new Uri('https://graph.microsoft.com/v1.0/me');
-        return (string) Uri::withQueryValue($uri, 'access_token', (string) $token);
+        // You need to add 'User.Read' to API permissions to be able to run that
+        return 'https://graph.microsoft.com/v1.0/me';
     }
 
-    protected function createResourceOwner(array $response, AccessToken $token): GenericResourceOwner
+    protected function createResourceOwner(array $response, AccessToken $token): ResourceOwner
     {
-        return new GenericResourceOwner($response, self::ACCESS_TOKEN_RESOURCE_OWNER_ID);
+        return new ResourceOwner($response);
     }
 
     protected function getDefaultHeaders(): array
