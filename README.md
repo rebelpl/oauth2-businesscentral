@@ -156,3 +156,8 @@ foreach ($data['value'] as $company) {
     echo " - {$company['Name']}:\t{$company['Id']}\n";
 }
 ```
+
+## Testing
+````
+./vendor/bin/phpunit
+````
