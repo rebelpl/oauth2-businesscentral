@@ -3,7 +3,7 @@
 This package provides # Business Central OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
 
 ## Pre-requisites
-The app you want to connect to BC must be defined in Entra admin center > Identity > Applications > App registrations:
+The app you want to connect to BC must be defined in [Entra admin center](https://entra.microsoft.com/#home) > Identity > Applications > [App registrations:](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM)
 - Authentication: Web + Redirect URI
 - Client secret
 - API permissions > Delegated permissions: Financials.ReadWrite.All, user_impersonation
