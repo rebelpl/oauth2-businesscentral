@@ -9,6 +9,8 @@ use Psr\Http\Message\ResponseInterface;
 class BusinessCentral extends AbstractProvider
 {
     const ACCESS_TOKEN_RESOURCE_OWNER_ID = 'id';
+    const CLIENT_CREDENTIALS_SCOPE = 'https://api.businesscentral.dynamics.com/.default';
+    const AUTHORIZATION_CODE_SCOPE = 'https://api.businesscentral.dynamics.com/user_impersonation offline_access';
 
     protected string $tenantId;
 
@@ -45,7 +47,7 @@ class BusinessCentral extends AbstractProvider
     protected function getDefaultScopes(): array
     {
         return [
-            'https://api.businesscentral.dynamics.com/user_impersonation offline_access',
+            self::AUTHORIZATION_CODE_SCOPE,
         ];
     }
 

@@ -3,10 +3,26 @@
 This package provides # Business Central OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
 
 ## Pre-requisites
-The app you want to connect to BC must be defined in [Entra admin center](https://entra.microsoft.com/#home) > Identity > Applications > [App registrations:](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM)
-- Authentication: Web + Redirect URI
-- Client secret
-- API permissions > Delegated permissions: Financials.ReadWrite.All, user_impersonation
+The app you want to connect to BC must be setup in [Entra admin center](https://entra.microsoft.com/#home) > Identity > Applications > [App registrations](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM)
+
+There are two main authorization flow options, you need to set up your app accordingly:
+
+### Option 1: Client credentials (service-to-service)
+With this option the app will always work with the same set of permissions - defined in Business Central.
+- Authentication: Web + Redirect URI = https://businesscentral.dynamics.com/OAuthLanding.htm
+- Certificates & secrets: New client secret
+- API permissions: Add permission > Dynamics 365 Business Central > Application permissions > *API.ReadWrite.All*
+
+In Business Central go to Microsoft Entra Applications, add the New app using Application (client) ID. Set up permissions required for the app (for example *D365 BUS FULL ACCESS*).
+Depending on the tenant's settings, administrator might need to "Grant Consent" for the app.
+
+### Option 2: Authorization code (login-as)
+With this option the app will work with the permissions of the user who uses it (and needs to log in).
+- Authentication: Web + Redirect URI = https://your-app-url/callback-url
+- Certificates & secrets: New client secret
+- API permissions: Add permission > Dynamics 365 Business Central > Delegated permissions: *Financials.ReadWrite.All*, *user_impersonation*
+
+Depending on the tenant's settings, administrator might need to grant consent for the app. You can use `$provider->getAdminConsentUrl()` for that purpose.
 
 ## Installation
 
@@ -19,6 +35,25 @@ composer require rebelpl/oauth2-businesscentral
 ## Usage
 
 Usage is the same as The League's OAuth client, using `\Rebel\OAuth2\Client\Provider\BusinessCentral` as the provider.
+
+### Client Credentials Grant
+```php
+$provider = new Rebel\OAuth2\Client\Provider\BusinessCentral([
+    // Required
+    'tenantId'                  => 'mydomain.com',
+    'clientId'                  => 'xxxxx-yyyy-zzzz-xxxx-yyyyyyyyyyyy',
+    'clientSecret'              => '*************************',
+]);
+
+$token = $provider->getAccessToken('client_credentials', [
+    'scope' => Rebel\OAuth2\Client\Provider\BusinessCentral::CLIENT_CREDENTIALS_SCOPE
+]);
+
+// We might save the token somewhere safe for later use
+$filename = __DIR__ . '/tokens.json';
+file_put_contents($filename, json_encode($token->jsonSerialize(), JSON_PRETTY_PRINT));
+
+```
 
 ### Authorization Code Grant
 ```php
@@ -71,7 +106,8 @@ if (!isset($_GET['code'])) {
     echo 'Expired in: ' . $token->getExpires() . "<br>";
     echo 'Already expired? ' . ($token->hasExpired() ? 'expired' : 'not expired') . "<br>";
     
-    // We might save the token somewhere safe for later use
+    // We might save the token somewhere safe for later use,
+    // but remember it should be stored per-user, not globally
     $filename = __DIR__ . '/tokens.json';
     file_put_contents($filename, json_encode($token->jsonSerialize(), JSON_PRETTY_PRINT));
 }
