@@ -124,7 +124,7 @@ $provider = new Rebel\OAuth2\Client\Provider\BusinessCentral([
 
 // load existing tokens from storage
 $filename = __DIR__ . '/tokens.json';
-$token = new League\OAuth2\Client\Token(json_decode(file_get_contents($filename), true));
+$token = new League\OAuth2\Client\Token\AccessToken(json_decode(file_get_contents($filename), true));
 
 if ($token->hasExpired()) {
     $token = $provider->getAccessToken('refresh_token', [
