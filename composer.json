@@ -18,12 +18,13 @@
     "business central"
   ],
   "require": {
+    "php": "^7.2|^8",
     "league/oauth2-client": "^2.0"
   },
   "require-dev": {
     "mockery/mockery": "~0.9",
     "squizlabs/php_codesniffer": "~2.0",
-    "phpunit/phpunit": "^11"
+    "phpunit/phpunit": "*"
   },
   "autoload": {
     "psr-4": {

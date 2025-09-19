@@ -5,7 +5,7 @@ use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 
 class ResourceOwner implements ResourceOwnerInterface
 {
-    protected array $response;
+    protected $response;
 
     public function __construct(array $response)
     {

@@ -12,7 +12,7 @@ class BusinessCentral extends AbstractProvider
     const CLIENT_CREDENTIALS_SCOPE = 'https://api.businesscentral.dynamics.com/.default';
     const AUTHORIZATION_CODE_SCOPE = 'https://api.businesscentral.dynamics.com/user_impersonation offline_access';
 
-    protected string $tenantId;
+    protected $tenantId;
 
     public function __construct(array $options = [], array $collaborators = [])
     {
@@ -27,7 +27,7 @@ class BusinessCentral extends AbstractProvider
 
     public function getAdminConsentUrl(): string
     {
-        return "https://login.microsoftonline.com/{$this->tenantId}/adminconsent?"
+        return "https://login.microsoftonline.com/$this->tenantId/adminconsent?"
             . http_build_query([
                 'client_id' => $this->clientId,
                 'redirect_uri' => $this->redirectUri,
@@ -36,12 +36,12 @@ class BusinessCentral extends AbstractProvider
 
     public function getBaseAuthorizationUrl(): string
     {
-        return "https://login.microsoftonline.com/{$this->tenantId}/oauth2/v2.0/authorize";
+        return "https://login.microsoftonline.com/$this->tenantId/oauth2/v2.0/authorize";
     }
 
     public function getBaseAccessTokenUrl(array $params): string
     {
-        return "https://login.microsoftonline.com/{$this->tenantId}/oauth2/v2.0/token";
+        return "https://login.microsoftonline.com/$this->tenantId/oauth2/v2.0/token";
     }
 
     protected function getDefaultScopes(): array
